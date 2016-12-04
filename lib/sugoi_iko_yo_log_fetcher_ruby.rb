@@ -32,7 +32,7 @@ module SugoiIkoYoLogFetcherRuby
       end
     end
 
-    def messages
+    def message
       @error_messages.map { |message|
         "[ERROR] #{message}"
       }.join("\n")
