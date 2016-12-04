@@ -1,13 +1,15 @@
 #!/usr/bin/env ruby
 
+require "bundler/setup"
 require "sugoi_iko_yo_log_fetcher_ruby"
 
 cli = SugoiIkoYoLogFetcherRuby.build_cli(ARGV)
-if cli.vaid?
+if cli.valid?
   begin
     cli.run!
   rescue => e
-    puts e.messages.inspect
+    puts e.message
+    puts e.backtrace.join("\n")
     exit(1)
   end
 else
