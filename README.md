@@ -1,6 +1,7 @@
 # sugoi-iko-yo-log-fetcher-ruby
 * Amazon S3に保管されているログデータをダウンロードしてくる
 * https://github.com/actindi-dev/sugoi-iko-yo-log-fetcher のRuby実装です
+* 並列ダウンロードする
 
 ## Installation
 

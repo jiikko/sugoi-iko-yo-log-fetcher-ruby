@@ -7,15 +7,16 @@ module SugoiIkoYoLogFetcherRuby
 
     # 指定したパスにダウンロードをする
     def direct_download!
-      @dates.each do |date|
+      Parallel.each(@dates, in_threads: 5)  do |date|
         file = date_to_local_path(date)
         fetch_file(file, date)
       end
+      true
     end
 
     # tempfileにダウンロードするので受取側はcpした後にtempfileのcloseをしてくれ
     def paths
-      @dates.map do |date|
+      Parallel.map(@dates, in_threads: 5)  do |date|
         file = Tempfile.new
         fetch_file(file, date)
         file.seek(0)

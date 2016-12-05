@@ -2,6 +2,7 @@ require 'sugoi_iko_yo_log_fetcher_ruby/version'
 require 'sugoi_iko_yo_log_fetcher_ruby/runner'
 require 'date'
 require 'tempfile'
+require 'parallel'
 
 module SugoiIkoYoLogFetcherRuby
   class CLI
