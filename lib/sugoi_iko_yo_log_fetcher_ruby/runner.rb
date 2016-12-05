@@ -8,8 +8,8 @@ module SugoiIkoYoLogFetcherRuby
     # 指定したパスにダウンロードをする
     def direct_download!
       Parallel.each(@dates, in_threads: 5)  do |date|
-        file = date_to_local_path(date)
-        fetch_file(file, date)
+        file = date_to_local_file(date)
+        fetch_file(file, date) if file.size != 0
       end
       true
     end
@@ -40,9 +40,9 @@ module SugoiIkoYoLogFetcherRuby
     end
 
     # TODO
-    def date_to_local_path(date)
+    def date_to_local_file(date)
       path = File.join("#{prefix}", '')
-      File.new(path)
+      File.open(path, 'w')
     end
 
     def iko_yo_log_bucket_name
