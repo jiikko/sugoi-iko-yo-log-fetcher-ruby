@@ -1,5 +1,7 @@
 require 'sugoi_iko_yo_log_fetcher_ruby/version'
+require 'sugoi_iko_yo_log_fetcher_ruby/runner'
 require 'date'
+require 'tempfile'
 
 module SugoiIkoYoLogFetcherRuby
   class CLI
@@ -9,13 +11,12 @@ module SugoiIkoYoLogFetcherRuby
       @end_on = args[1]
     end
 
-    def run!
+    def run
+      runner = Runner.new
       if @end_on.nil?
-        fetch_log(@start_on)
+        Runner.new(@start_on)
       else
-        Date.parse(@start_on)..Date.parse(@end_on).each do |date|
-          fetch_log(date)
-        end
+        Runner.new(*Date.parse(@start_on)..Date.parse(@end_on).to_a)
       end
     end
 
@@ -36,12 +37,6 @@ module SugoiIkoYoLogFetcherRuby
       @error_messages.map { |message|
         "[ERROR] #{message}"
       }.join("\n")
-    end
-
-    private
-
-    def fetch_log(date)
-      # TODO
     end
   end
 
