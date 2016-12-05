@@ -3,6 +3,7 @@ require 'sugoi_iko_yo_log_fetcher_ruby/runner'
 require 'date'
 require 'tempfile'
 require 'parallel'
+require 'aws-sdk'
 
 module SugoiIkoYoLogFetcherRuby
   class CLI

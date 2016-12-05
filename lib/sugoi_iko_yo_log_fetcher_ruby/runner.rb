@@ -7,7 +7,7 @@ module SugoiIkoYoLogFetcherRuby
 
     # 指定したパスにダウンロードをする
     def direct_download!
-      Parallel.each(@dates, in_threads: 5)  do |date|
+      each_dates.each do |date|
         file = date_to_local_file(date)
         fetch_file(file, date) if file.size != 0
       end
@@ -15,8 +15,8 @@ module SugoiIkoYoLogFetcherRuby
     end
 
     # tempfileにダウンロードするので受取側はcpした後にtempfileのcloseをしてくれ
-    def paths
-      Parallel.map(@dates, in_threads: 5)  do |date|
+    def files
+      each_dates do |date|
         file = Tempfile.new
         fetch_file(file, date)
         file.seek(0)
@@ -25,6 +25,18 @@ module SugoiIkoYoLogFetcherRuby
     end
 
     private
+
+    def each_dates
+      if @dates.size == 1
+        @dates.map do |date|
+          yield(date)
+        end
+      else
+        Parallel.map(@dates, in_threads: 5) do |date|
+          yield(date)
+        end
+      end
+    end
 
     def fetch_file(file, date)
       file.write(s3_object(date))
