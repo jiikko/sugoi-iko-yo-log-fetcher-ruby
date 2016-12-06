@@ -12,6 +12,17 @@ describe SugoiIkoYoLogFetcherRuby::Runner do
       allow_any_instance_of(SugoiIkoYoLogFetcherRuby::Runner).to receive(:setup_aws_sdk!).and_return(nil)
     end
 
+    context '#chdir_with を使う時' do
+      it 'be success' do
+        SugoiIkoYoLogFetcherRuby.chdir_with do |tmpdir|
+          runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
+          runner.download!
+          expect(File.ftype("#{tmpdir}/logs/test/2015/12/")).to eq('directory')
+          expect(File.ftype("#{tmpdir}/logs/test/2015/12/12_0.gz")).to eq('file')
+        end
+      end
+    end
+
     it 'be success' do
       correct_pwd = Dir.pwd
       begin

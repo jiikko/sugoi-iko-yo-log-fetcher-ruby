@@ -45,4 +45,15 @@ module SugoiIkoYoLogFetcherRuby
   def self.build_cli(argv)
     CLI.new(argv)
   end
+
+  # 現在のパスにログをダウンロードするのでディレクトリを移動する
+  def self.chdir_with(&block)
+    correct_pwd = Dir.pwd
+    tmpdir = Dir.mktmpdir
+    Dir.chdir(tmpdir)
+    yield(tmpdir)
+  ensure
+    Dir.chdir(correct_pwd)
+    FileUtils.remove_entry_secure(tmpdir)
+  end
 end

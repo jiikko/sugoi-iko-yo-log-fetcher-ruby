@@ -29,16 +29,13 @@ $ sugoi-iko-yo-log-fetcher-ruby start end
 require 'fileutils'
 require 'tmpdir'
 
-prev_pwd = Dir.pwd
-dir_name = Dir.mktmpdir
-Dir.chdir(dir_name) # 現在のパスにログをダウンロードするのでディレクトリを移動する
-runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
-runner.download!
-Dir.glob("#{dir_name}/**"} do |path|
-  puts path # 何らかの処理
+SugoiIkoYoLogFetcherRuby.chdir_with do |tmpdir|
+  runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
+  runner.download!
+  Dir.glob("#{tmpdir}/**"} do |path|
+    puts path # 何らかの処理
+  end
 end
-Dir.chdir(prev_pwd) #
-FileUtils.remove_entry_secure(dir_name)
 ```
 
 ## TODO
