@@ -1,7 +1,6 @@
 # sugoi-iko-yo-log-fetcher-ruby
-* Amazon S3に保管されているログデータをダウンロードしてくる
+* Amazon S3に保管されているログデータを並列でダウンロードする
 * https://github.com/actindi-dev/sugoi-iko-yo-log-fetcher のRuby実装です
-* 並列ダウンロードする
 
 ## Installation
 
@@ -20,16 +19,27 @@ Or install it yourself as:
     $ gem install sugoi-iko-yo-log-fetcher-ruby
 
 ## Usage
+### shell
 ```shell
 $ sugoi-iko-yo-log-fetcher-ruby start end
 ```
 
-## Development
+### ruby
+```ruby
+require 'fileutils'
+require 'tmpdir'
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+prev_pwd = Dir.pwd
+dir_name = Dir.mktmpdir
+Dir.chdir(dir_name) # 現在のパスにログをダウンロードするのでディレクトリを移動する
+runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
+runner.download!
+Dir.glob("#{dir_name}/**"} do |path|
+  puts path # 何らかの処理
+end
+Dir.chdir(prev_pwd) #
+FileUtils.remove_entry_secure(dir_name)
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sugoi-iko-yo-log-fetcher-ruby.
+## TODO
+* Glacier行きもダウンロードする

@@ -6,7 +6,7 @@ require "sugoi_iko_yo_log_fetcher_ruby"
 cli = SugoiIkoYoLogFetcherRuby.build_cli(ARGV)
 if cli.valid?
   begin
-    cli.run.direct_download!
+    cli.run.download!
   rescue => e
     puts e.message
     puts e.backtrace.join("\n")

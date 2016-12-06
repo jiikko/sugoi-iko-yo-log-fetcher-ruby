@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module SugoiIkoYoLogFetcherRuby
   class Runner
     def initialize(*dates)
@@ -6,21 +8,14 @@ module SugoiIkoYoLogFetcherRuby
     end
 
     # 指定したパスにダウンロードをする
-    def direct_download!
-      each_dates.each do |date|
-        file = date_to_local_file(date)
-        fetch_file(file, date) if file.size != 0
-      end
-      true
-    end
-
-    # tempfileにダウンロードするので受取側はcpした後にtempfileのcloseをしてくれ
-    def files
+    def download!
       each_dates do |date|
-        file = Tempfile.new
-        fetch_file(file, date)
-        file.seek(0)
-        file
+        Parallel.map(bucket_objects(prefix: date_to_prefix_key(date)), in_threads: 5) do |object|
+          dir_path = File.join('./', dir_of(object.key))
+          FileUtils.mkdir_p(dir_path) unless File.exists?(dir_path)
+          file = File.open(object.key, 'w')
+          object.get(response_target: file.path)
+        end
       end
     end
 
@@ -38,33 +33,31 @@ module SugoiIkoYoLogFetcherRuby
       end
     end
 
-    def fetch_file(file, date)
-      file.write(s3_object(date))
+    def dir_of(path)
+      %r!^(.+)/[^/]+$! =~ path
+      $1
     end
 
-    def s3_object(date)
+    def bucket_objects(prefix: )
       s3 = Aws::S3::Client.new
-      s3.get_object(bucket: iko_yo_log_bucket_name, key: date2key(date))
+      bucket = s3.bucket(iko_yo_log_bucket_name)
+      bucket.objects(prefix: prefix)
     end
 
-    def date_to_key(date)
-      # TODO
-    end
-
-    # TODO
-    def date_to_local_file(date)
-      path = File.join("#{prefix}", '')
-      File.open(path, 'w')
+    def date_to_prefix_key(date)
+      File.join("./logs/app", date.strftime('%Y/%m/%d'))
     end
 
     def iko_yo_log_bucket_name
       'iko-yo'
     end
 
+    # TODO
     def setup_aws_sdk!
+      creds = JSON.load(File.read('secrets.json'))
       Aws.config.update({
-        region: 'us-west-2',
-        # credentials: Aws::Credentials.new('akid', 'secret')
+        region: 'ap-northeast-1',
+        credentials: Aws::Credentials.new(creds['AccessKeyId'], creds['SecretAccessKey'])
       })
     end
   end
