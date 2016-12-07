@@ -2,21 +2,16 @@
 * Amazon S3に保管されているログデータを並列でダウンロードする
 * https://github.com/actindi-dev/sugoi-iko-yo-log-fetcher のRuby実装です
 
+## Requirements
+* ruby-2.3.0+
+
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sugoi-iko-yo-log-fetcher-ruby'
+gem 'sugoi-iko-yo-log-fetcher-ruby', github: 'https://github.com/jiikko/sugoi-iko-yo-log-fetcher-ruby'
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install sugoi-iko-yo-log-fetcher-ruby
 
 ## Usage
 認証情報は `~/.ai_s3log` に用意します
