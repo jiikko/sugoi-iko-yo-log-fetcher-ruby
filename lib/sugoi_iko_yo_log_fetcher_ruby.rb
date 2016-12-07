@@ -13,12 +13,12 @@ module SugoiIkoYoLogFetcherRuby
       @end_on = args[1]
     end
 
-    def run
-      runner = Runner.new
+    def download!
       if @end_on.nil?
-        Runner.new(@start_on)
+        Runner.new(Date.parse(@start_on)).download!
       else
-        Runner.new(*Date.parse(@start_on)..Date.parse(@end_on).to_a)
+        dates = (Date.parse(@start_on)..Date.parse(@end_on)).to_a
+        Runner.new(*dates).download!
       end
     end
 

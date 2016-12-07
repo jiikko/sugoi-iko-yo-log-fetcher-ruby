@@ -19,6 +19,13 @@ Or install it yourself as:
     $ gem install sugoi-iko-yo-log-fetcher-ruby
 
 ## Usage
+認証情報は `~/.ai_s3log` に用意します
+```shell
+$ cat ~/.ai_s3log
+access_token
+secret_toten
+```
+
 ### shell
 ```shell
 $ sugoi-iko-yo-log-fetcher-ruby start end
@@ -40,3 +47,4 @@ end
 
 ## TODO
 * Glacier行きもダウンロードする
+* プログレスバー

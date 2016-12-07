@@ -7,14 +7,18 @@ module SugoiIkoYoLogFetcherRuby
       @dates = dates
     end
 
-    # 指定したパスにダウンロードをする
     def download!
       each_dates do |date|
         Parallel.map(bucket_objects(prefix: date_to_prefix_key(date)), in_threads: 5) do |object|
+          puts "found #{object.key}"
           dir_path = File.join('./', dir_of(object.key))
           FileUtils.mkdir_p(dir_path) unless File.exists?(dir_path)
-          file = File.open(object.key, 'w')
-          object.get(response_target: file.path)
+          unless File.exists?(object.key)
+            File.open(object.key, 'w') do |file|
+              object.get(response_target: file.path)
+            end
+            puts "downloaded #{object.key}"
+          end
         end
       end
     end
@@ -27,7 +31,7 @@ module SugoiIkoYoLogFetcherRuby
           yield(date)
         end
       else
-        Parallel.map(@dates, in_threads: 5) do |date|
+        Parallel.map(@dates, in_threads: 2) do |date|
           yield(date)
         end
       end
@@ -39,25 +43,24 @@ module SugoiIkoYoLogFetcherRuby
     end
 
     def bucket_objects(prefix: )
-      s3 = Aws::S3::Client.new
+      s3 = Aws::S3::Resource.new
       bucket = s3.bucket(iko_yo_log_bucket_name)
       bucket.objects(prefix: prefix)
     end
 
     def date_to_prefix_key(date)
-      File.join("./logs/app", date.strftime('%Y/%m/%d'))
+      File.join("logs/app", date.strftime('%Y/%m/%d'))
     end
 
     def iko_yo_log_bucket_name
-      'iko-yo'
+      'iko-yo.net'
     end
 
-    # TODO
     def setup_aws_sdk!
-      creds = JSON.load(File.read('secrets.json'))
+      secrets = File.open("#{Dir.home}/.ai_s3log").each_line.inject([]) { |a, v| a << v.chomp }
       Aws.config.update({
         region: 'ap-northeast-1',
-        credentials: Aws::Credentials.new(creds['AccessKeyId'], creds['SecretAccessKey'])
+        credentials: Aws::Credentials.new(secrets[0], secrets[1])
       })
     end
   end
