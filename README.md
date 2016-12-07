@@ -33,8 +33,8 @@ $ sugoi-iko-yo-log-fetcher-ruby start end
 
 ### ruby
 ```ruby
-require 'fileutils'
-require 'tmpdir'
+require "bundler/setup"
+require "sugoi_iko_yo_log_fetcher_ruby"
 
 SugoiIkoYoLogFetcherRuby.chdir_with do |tmpdir|
   runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
