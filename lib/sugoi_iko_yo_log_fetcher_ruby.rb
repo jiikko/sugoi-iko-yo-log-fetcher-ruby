@@ -17,8 +17,10 @@ module SugoiIkoYoLogFetcherRuby
       if @end_on.nil?
         Runner.new(Date.parse(@start_on)).download!
       else
-        dates = (Date.parse(@start_on)..Date.parse(@end_on)).to_a
-        Runner.new(*dates).download!
+        Runner.new(
+          Date.parse(@start_on),
+          Date.parse(@end_on),
+        ).download!
       end
     end
 

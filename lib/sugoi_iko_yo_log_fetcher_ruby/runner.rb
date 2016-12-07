@@ -4,11 +4,16 @@ module SugoiIkoYoLogFetcherRuby
   class Runner
     def initialize(*dates)
       setup_aws_sdk!
-      @dates = dates
+      @dates =
+        if dates.size == 1
+          dates
+        else
+          (dates[0]..dates[1]).to_a
+        end
     end
 
     def download!
-      each_dates do |date|
+      file_list = each_dates do |date|
         Parallel.map(bucket_objects(prefix: date_to_prefix_key(date)), in_threads: 5) do |object|
           puts "found #{object.key}"
           dir_path = File.join('./', dir_of(object.key))
@@ -19,8 +24,11 @@ module SugoiIkoYoLogFetcherRuby
             end
             puts "downloaded #{object.key}"
           end
+          object.key
         end
       end
+      puts
+      puts %(zgrep "REGEX" #{file_list.flatten.map {|x| %("#{x}") }.join(' ')})
     end
 
     private
