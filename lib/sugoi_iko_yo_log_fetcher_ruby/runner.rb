@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'thread'
 
 module SugoiIkoYoLogFetcherRuby
   class Runner
@@ -13,16 +14,17 @@ module SugoiIkoYoLogFetcherRuby
     end
 
     def download!
+      mutex = Mutex.new
       file_list = each_dates do |date|
         Parallel.map(bucket_objects(prefix: date_to_prefix_key(date)), in_threads: 5) do |object|
-          puts "found #{object.key}"
+          mutex.synchronize { puts "found #{object.key}" }
           dir_path = File.join('./', dir_of(object.key))
           FileUtils.mkdir_p(dir_path) unless File.exists?(dir_path)
           unless File.exists?(object.key)
             File.open(object.key, 'w') do |file|
               object.get(response_target: file.path)
             end
-            puts "downloaded #{object.key}"
+            mutex.synchronize { puts "downloaded #{object.key}" }
           end
           object.key
         end
