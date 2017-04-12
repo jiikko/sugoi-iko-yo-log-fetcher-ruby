@@ -34,7 +34,7 @@ require "sugoi_iko_yo_log_fetcher_ruby"
 SugoiIkoYoLogFetcherRuby.chdir_with do |tmpdir|
   runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
   runner.download!
-  Dir.glob("#{tmpdir}/**") do |path|
+  Dir.glob("#{tmpdir}/**/*.gz") do |path|
     puts path # 何らかの処理
   end
 end
