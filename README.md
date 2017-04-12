@@ -10,7 +10,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sugoi-iko-yo-log-fetcher-ruby', github: 'https://github.com/jiikko/sugoi-iko-yo-log-fetcher-ruby'
+gem 'sugoi-iko-yo-log-fetcher-ruby', github: 'jiikko/sugoi-iko-yo-log-fetcher-ruby'
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ require "sugoi_iko_yo_log_fetcher_ruby"
 SugoiIkoYoLogFetcherRuby.chdir_with do |tmpdir|
   runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
   runner.download!
-  Dir.glob("#{tmpdir}/**"} do |path|
+  Dir.glob("#{tmpdir}/**") do |path|
     puts path # 何らかの処理
   end
 end
