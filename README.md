@@ -10,7 +10,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sugoi-iko-yo-log-fetcher-ruby', github: 'jiikko/sugoi-iko-yo-log-fetcher-ruby'
+gem 'sugoi_iko_yo_log_fetcher_ruby', github: 'jiikko/sugoi-iko-yo-log-fetcher-ruby'
 ```
 
 ## Usage
