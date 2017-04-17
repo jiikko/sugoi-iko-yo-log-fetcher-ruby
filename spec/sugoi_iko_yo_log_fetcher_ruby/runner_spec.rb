@@ -54,6 +54,17 @@ describe SugoiIkoYoLogFetcherRuby::Runner do
         end
       end
 
+      context 'except_paths オプションがある時' do
+        it 'except_paths に含むパスはdownloadをしないこと' do
+          SugoiIkoYoLogFetcherRuby.chdir_with do |tmpdir|
+            runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
+            runner.download!(except_paths: ['logs/test/2015/12/12_0.gz'])
+            expect(File.ftype("#{tmpdir}/logs/test/2015/12/")).to eq('directory')
+            expect(Dir.glob("#{tmpdir}/logs/test/2015/12/*").size).to eq(0)
+          end
+        end
+      end
+
       it 'be success' do
         correct_pwd = Dir.pwd
         begin
@@ -63,6 +74,7 @@ describe SugoiIkoYoLogFetcherRuby::Runner do
           runner.download!
           expect(File.ftype("#{dir_name}/logs/test/2015/12/")).to eq('directory')
           expect(File.ftype("#{dir_name}/logs/test/2015/12/12_0.gz")).to eq('file')
+          expect(Dir.glob("#{dir_name}/logs/test/2015/12/*").size).to eq(1)
         ensure
           Dir.chdir(correct_pwd)
           FileUtils.remove_entry_secure(dir_name) if File.exists?(dir_name)
