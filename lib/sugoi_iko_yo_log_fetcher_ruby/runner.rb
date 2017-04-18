@@ -20,7 +20,10 @@ module SugoiIkoYoLogFetcherRuby
           mutex.synchronize { puts "found #{object.key}" }
           dir_path = File.join('./', dir_of(object.key))
           FileUtils.mkdir_p(dir_path) unless File.exists?(dir_path)
-          next if except_paths.find { |except_path| except_path == object.key }
+          if except_paths.find { |except_path| except_path == object.key }
+            mutex.synchronize { puts "skip #{object.key}" }
+            next
+          end
           next if File.exists?(object.key)
           File.open(object.key, 'w') do |file|
             object.get(response_target: file.path)
