@@ -59,7 +59,6 @@ describe SugoiIkoYoLogFetcherRuby::Runner do
           SugoiIkoYoLogFetcherRuby.chdir_with do |tmpdir|
             runner = SugoiIkoYoLogFetcherRuby::Runner.new(Date.new(2015, 11, 11))
             runner.download!(except_paths: ['logs/test/2015/12/12_0.gz'])
-            expect(File.ftype("#{tmpdir}/logs/test/2015/12/")).to eq('directory')
             expect(Dir.glob("#{tmpdir}/logs/test/2015/12/*").size).to eq(0)
           end
         end
