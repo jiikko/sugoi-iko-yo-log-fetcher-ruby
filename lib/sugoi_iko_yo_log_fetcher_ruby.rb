@@ -4,6 +4,7 @@ require 'date'
 require 'tempfile'
 require 'parallel'
 require 'aws-sdk'
+require 'retriable'
 
 module SugoiIkoYoLogFetcherRuby
   class CLI
